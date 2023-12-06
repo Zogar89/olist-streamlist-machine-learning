@@ -66,7 +66,7 @@ def process_data(orders_df, items_df):
 weekly_sales = process_data(orders_df, items_df)
 
 # Mostrar la tabla de ventas semanales
-st.write("Ventas Semanales", weekly_sales)
+#st.write("Ventas Semanales", weekly_sales)
 
 # Convertir year_week a un formato numérico para el modelo
 weekly_sales['week_number'] = np.arange(len(weekly_sales))
