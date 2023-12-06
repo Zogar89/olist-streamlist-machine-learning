@@ -3,3 +3,7 @@ numpy
 pandas
 pydeck
 streamlit
+requests
+os
+sklearn.linear_model
+matplotlib.pyplot
