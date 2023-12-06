@@ -43,7 +43,7 @@ else:
     orders_filepath = orders_file_name
 
 # Cargar los datos
-@st.cache
+@st.cache_data
 def load_data(items_filepath, orders_filepath):
     orders = pd.read_csv(orders_filepath)
     items = pd.read_csv(items_filepath)
@@ -60,6 +60,9 @@ def process_data(orders_df, items_df):
     weekly_sales = merged_df.groupby('year_week').size().reset_index(name='order_count')
     return weekly_sales
 
+# Cargar tus datos aquí
+# orders_df = ...
+# items_df = ...
 weekly_sales = process_data(orders_df, items_df)
 
 # Mostrar la tabla de ventas semanales
@@ -75,26 +78,31 @@ y = weekly_sales['order_count'].values
 model.fit(X, y)
 
 # Hacer predicciones
-# Supongamos que queremos predecir desde Septiembre 2018 a Diciembre 2019
-# Esto sería aproximadamente desde la semana 35 de 2018 hasta la semana 52 de 2019
-# Calculamos el número de semanas desde el inicio de nuestro conjunto de datos
 start_week = datetime.datetime.strptime('2018-09-01', '%Y-%m-%d').isocalendar()[1]
 end_week = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').isocalendar()[1]
-start_week_number = weekly_sales[weekly_sales['year_week'] == '2018-{}'.format(str(start_week).zfill(2))].week_number.values[0]
-end_week_number = weekly_sales[weekly_sales['year_week'] == '2019-{}'.format(str(end_week).zfill(2))].week_number.values[0]
-prediction_weeks = np.arange(start_week_number, end_week_number + 1).reshape(-1, 1)
-predictions = model.predict(prediction_weeks)
 
-# Visualización
-fig, ax = plt.subplots()
-ax.plot(weekly_sales['year_week'], weekly_sales['order_count'], label='Datos Reales')
-ax.plot(weekly_sales.loc[start_week_number:end_week_number, 'year_week'], predictions, label='Predicciones', linestyle='--')
-ax.set_xlabel('Semana (Desde 2017)')
-ax.set_ylabel('Número de Pedidos')
-ax.set_title('Número de Pedidos por Semana (2017-2018)')
-ax.legend()
-plt.xticks(rotation=90)
-plt.tight_layout()
+# Asegurarse de que las semanas de inicio y fin estén en el DataFrame
+start_week_str = '2018-{}'.format(str(start_week).zfill(2))
+end_week_str = '2019-{}'.format(str(end_week).zfill(2))
 
-# Mostrar el gráfico en Streamlit
-st.pyplot(fig)
+if start_week_str in weekly_sales['year_week'].values and end_week_str in weekly_sales['year_week'].values:
+    start_week_number = weekly_sales[weekly_sales['year_week'] == start_week_str].week_number.values[0]
+    end_week_number = weekly_sales[weekly_sales['year_week'] == end_week_str].week_number.values[0]
+    prediction_weeks = np.arange(start_week_number, end_week_number + 1).reshape(-1, 1)
+    predictions = model.predict(prediction_weeks)
+
+    # Visualización
+    fig, ax = plt.subplots()
+    ax.plot(weekly_sales['year_week'], weekly_sales['order_count'], label='Datos Reales')
+    ax.plot(weekly_sales.loc[start_week_number:end_week_number, 'year_week'], predictions, label='Predicciones', linestyle='--')
+    ax.set_xlabel('Semana (Desde 2017)')
+    ax.set_ylabel('Número de Pedidos')
+    ax.set_title('Número de Pedidos por Semana (2017-2018)')
+    ax.legend()
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+
+    # Mostrar el gráfico en Streamlit
+    st.pyplot(fig)
+else:
+    st.error('Rango de fechas seleccionado no disponible en los datos.')
