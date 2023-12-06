@@ -91,23 +91,24 @@ if len(prediction_weeks) > 0:
     # Hacer predicciones
     predictions = model.predict(prediction_weeks)
 
-# Preparar datos para la visualización
-all_weeks = pd.DataFrame({
-    'year_week': [f'2019-{str(week).zfill(2)}' for week in range(1, end_week_2019 - len(weekly_sales) + 1)],
-    'week_number': range(len(weekly_sales), end_week_2019),
-    'predicted_count': predictions
-})
+    # Preparar datos para la visualización
+    future_weeks = [f'2019-{str(week).zfill(2)}' for week in range(last_date_in_data.isocalendar()[1] + 1, last_date_in_data.isocalendar()[1] + 1 + total_weeks)]
+    all_weeks = pd.DataFrame({
+        'year_week': weekly_sales['year_week'].tolist() + future_weeks,
+        'predicted_count': np.concatenate([y, predictions])
+    })
 
-# Visualización
-fig, ax = plt.subplots()
-ax.plot(weekly_sales['year_week'], weekly_sales['order_count'], label='Datos Reales')
-ax.plot(all_weeks['year_week'], all_weeks['predicted_count'], label='Predicciones', linestyle='--')
-ax.set_xlabel('Semana (Desde 2017)')
-ax.set_ylabel('Número de Pedidos')
-ax.set_title('Número de Pedidos por Semana (2017-2019)')
-ax.legend()
-plt.xticks(rotation=90)
-plt.tight_layout()
+    # Visualización
+    fig, ax = plt.subplots()
+    ax.plot(all_weeks['year_week'], all_weeks['predicted_count'], label='Datos y Predicciones', linestyle='--')
+    ax.set_xlabel('Semana (Desde 2017)')
+    ax.set_ylabel('Número de Pedidos')
+    ax.set_title('Número de Pedidos por Semana (2017-2019)')
+    ax.legend()
+    plt.xticks(rotation=90)
+    plt.tight_layout()
 
-# Mostrar el gráfico en Streamlit
-st.pyplot(fig)
+    # Mostrar el gráfico en Streamlit
+    st.pyplot(fig)
+else:
+    st.error('No hay semanas adicionales para predecir.')
