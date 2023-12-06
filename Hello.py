@@ -78,13 +78,18 @@ X = weekly_sales['week_number'].values.reshape(-1, 1)
 y = weekly_sales['order_count'].values
 model.fit(X, y)
 
-# Preparar rango de fechas para predicciones
-# Calculamos el número de semanas desde el inicio de nuestro conjunto de datos hasta finales de 2019
-end_week_2019 = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').isocalendar()[1] + 52  # Sumamos 52 semanas por el año 2019
-prediction_weeks = np.arange(len(weekly_sales), end_week_2019).reshape(-1, 1)
+# Calcular el número total de semanas hasta el final de 2019
+last_date_in_data = datetime.datetime.strptime(weekly_sales['year_week'].iloc[-1] + '-1', '%Y-%U-%w')
+end_of_2019 = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d')
+total_weeks = (end_of_2019 - last_date_in_data).days // 7
 
-# Hacer predicciones
-predictions = model.predict(prediction_weeks)
+# Preparar rango de fechas para predicciones
+prediction_weeks = np.arange(len(weekly_sales), len(weekly_sales) + total_weeks).reshape(-1, 1)
+
+# Verificar si hay semanas para predecir
+if len(prediction_weeks) > 0:
+    # Hacer predicciones
+    predictions = model.predict(prediction_weeks)
 
 # Preparar datos para la visualización
 all_weeks = pd.DataFrame({
