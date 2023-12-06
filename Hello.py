@@ -107,6 +107,6 @@ ax.axvline(x=last_week_num, color='red', linestyle='--', label='Inicio de las Pr
 ax.set_xlabel('Número de Semana')
 ax.set_ylabel('Número de Pedidos')
 ax.legend()
-ax.grid(True)
+ax.grid(False)
 
 st.pyplot(fig)
