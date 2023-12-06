@@ -5,6 +5,8 @@ import requests
 import os
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
+from matplotlib.dates import DateFormatter
+import datetime
 
 # Función para descargar archivos
 def download_file(url, file_name):
@@ -63,4 +65,36 @@ weekly_sales = process_data(orders_df, items_df)
 # Mostrar la tabla de ventas semanales
 st.write("Ventas Semanales", weekly_sales)
 
-# Aquí seguiría el código para el modelo de regresión y visualización...
+# Convertir year_week a un formato numérico para el modelo
+weekly_sales['week_number'] = np.arange(len(weekly_sales))
+
+# Modelo de regresión lineal
+model = LinearRegression()
+X = weekly_sales['week_number'].values.reshape(-1, 1)
+y = weekly_sales['order_count'].values
+model.fit(X, y)
+
+# Hacer predicciones
+# Supongamos que queremos predecir desde Septiembre 2018 a Diciembre 2019
+# Esto sería aproximadamente desde la semana 35 de 2018 hasta la semana 52 de 2019
+# Calculamos el número de semanas desde el inicio de nuestro conjunto de datos
+start_week = datetime.datetime.strptime('2018-09-01', '%Y-%m-%d').isocalendar()[1]
+end_week = datetime.datetime.strptime('2019-12-31', '%Y-%m-%d').isocalendar()[1]
+start_week_number = weekly_sales[weekly_sales['year_week'] == '2018-{}'.format(str(start_week).zfill(2))].week_number.values[0]
+end_week_number = weekly_sales[weekly_sales['year_week'] == '2019-{}'.format(str(end_week).zfill(2))].week_number.values[0]
+prediction_weeks = np.arange(start_week_number, end_week_number + 1).reshape(-1, 1)
+predictions = model.predict(prediction_weeks)
+
+# Visualización
+fig, ax = plt.subplots()
+ax.plot(weekly_sales['year_week'], weekly_sales['order_count'], label='Datos Reales')
+ax.plot(weekly_sales.loc[start_week_number:end_week_number, 'year_week'], predictions, label='Predicciones', linestyle='--')
+ax.set_xlabel('Semana (Desde 2017)')
+ax.set_ylabel('Número de Pedidos')
+ax.set_title('Número de Pedidos por Semana (2017-2018)')
+ax.legend()
+plt.xticks(rotation=90)
+plt.tight_layout()
+
+# Mostrar el gráfico en Streamlit
+st.pyplot(fig)
