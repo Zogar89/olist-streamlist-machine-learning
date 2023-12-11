@@ -75,6 +75,15 @@ X = weekly_sales[['week_number']]  # Asegúrate de que X sea un DataFrame para s
 y = weekly_sales['order_count']
 model.fit(X, y)
 
+# Calcular métricas de exactitud para el modelo
+y_pred = model.predict(X)
+mse = mean_squared_error(y, y_pred)
+r2 = r2_score(y, y_pred)
+
+# Mostrar métricas en Streamlit
+st.write(f"Error Medio Cuadrático (MSE): {mse}")
+st.write(f"Coeficiente de Determinación (R²): {r2}")
+
 # Preparar rango de semanas para predicciones
 # Asumiendo que quieres predecir desde la última semana conocida hasta 52 semanas más
 last_week_num = weekly_sales['week_number'].iloc[-1]
