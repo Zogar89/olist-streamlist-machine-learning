@@ -117,4 +117,21 @@ ax.set_ylabel('Número de Pedidos')
 ax.legend()
 ax.grid(False)
 
+# Agregar el markdown con el texto explicativo
+st.markdown("""
+## Análisis de la Predicción de Ventas Semanales
+
+Este gráfico muestra el número de pedidos por semana para el período 2017-2019, basado en los datos reales (azul) y las predicciones de nuestro modelo (naranja). El eje X representa el número de semana desde el inicio del período de datos, mientras que el eje Y muestra el número de pedidos realizados.
+
+Los puntos azules representan los datos históricos de ventas semanales. Observamos ciertas fluctuaciones semanales y posiblemente algunas tendencias estacionales o efectos de eventos específicos que podrían explicar los picos y caídas.
+
+La línea naranja muestra las predicciones de nuestro modelo de regresión lineal, comenzando desde el punto indicado por la línea roja punteada, que representa el inicio de las predicciones tras el último dato real registrado.
+
+El modelo ha sido evaluado utilizando dos métricas de rendimiento principales: 
+- El Error Medio Cuadrático (MSE) es 181959.58, lo que nos da una idea de la magnitud de los errores del modelo.
+- El Coeficiente de Determinación (R²) es 0.569, lo que indica que aproximadamente el 56.9% de la variabilidad en los datos históricos es explicada por el modelo.
+
+Aunque el R² sugiere que el modelo tiene una capacidad razonable para explicar las variaciones en las ventas semanales, el valor de MSE es considerable, lo que sugiere que las predicciones pueden desviarse significativamente de los valores reales. Esto puede ser debido a la simplificación del modelo, que no captura posiblemente toda la complejidad y los patrones subyacentes en los datos de ventas.
+""")
+
 st.pyplot(fig)
