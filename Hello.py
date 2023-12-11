@@ -61,8 +61,6 @@ def process_data(orders_df, items_df):
     return weekly_sales
 
 # Cargar tus datos aquí
-# orders_df = ...
-# items_df = ...
 weekly_sales = process_data(orders_df, items_df)
 
 # Mostrar la tabla de ventas semanales
