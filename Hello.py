@@ -123,7 +123,7 @@ st.markdown("""
 
 Este gráfico muestra el número de pedidos por semana para el período 2017-2019, basado en los datos reales (azul) y las predicciones de nuestro modelo (naranja). El eje X representa el número de semana desde el inicio del período de datos, mientras que el eje Y muestra el número de pedidos realizados.
 
-Los puntos azules representan los datos históricos de ventas semanales. Observamos ciertas fluctuaciones semanales y posiblemente algunas tendencias estacionales o efectos de eventos específicos que podrían explicar los picos y caídas.
+Los puntos azules representan los datos históricos de ventas semanales. Observamos ciertas fluctuaciones semanales y algunas tendencias estacionales o efectos de eventos específicos que explican los picos y caídas.
 
 La línea naranja muestra las predicciones de nuestro modelo de regresión lineal, comenzando desde el punto indicado por la línea roja punteada, que representa el inicio de las predicciones tras el último dato real registrado.
 
